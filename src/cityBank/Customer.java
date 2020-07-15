@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -63,6 +64,11 @@ public class Customer extends javax.swing.JInternalFrame {
         });
 
         jButton1.setText("Add");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Cancel");
 
@@ -151,32 +157,31 @@ public class Customer extends javax.swing.JInternalFrame {
 
     Connection con;
     PreparedStatement insert;
-    
+
     public void autoId() {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
             Statement s = con.createStatement();
-            
+
             ResultSet rs = s.executeQuery("select Max(cust_id) from customer");
             rs.next();
             rs.getString("Max(cust_id)");
-            
-            if(rs.getString("Max(cust_id)") == null){
-                
+
+            if (rs.getString("Max(cust_id)") == null) {
+
                 lblcustNo.setText("CUS001");
-                
-            }else{
-                
-                long id = Long.parseLong(rs.getString("Max(cust_id)").substring(2,rs.getString("Max(cust_id)").length()));
+
+            } else {
+
+                long id = Long.parseLong(rs.getString("Max(cust_id)").substring(2, rs.getString("Max(cust_id)").length()));
                 id++;
-                
-                lblcustNo.setText("CUS" +String.format("%03d", id));
-                
-                
+
+                lblcustNo.setText("CUS" + String.format("%03d", id));
+
             }
-            
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -188,6 +193,35 @@ public class Customer extends javax.swing.JInternalFrame {
     private void txtFnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFnameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFnameActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            // TODO add your handling code here:
+
+            String customerID = lblcustNo.getText();
+            String fName = txtFname.getText();
+            String lName = txtLname.getText();
+
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
+            
+            insert = con.prepareStatement("insert into customer(cust_id, fname, lname) values(?,?,?)");
+            
+            insert.setString(1, customerID);
+            insert.setString(2, fName);
+            insert.setString(3, lName);
+            
+            insert.executeUpdate();
+            
+            JOptionPane.showMessageDialog(this, "Customer added successfully...");
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
