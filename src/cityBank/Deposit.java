@@ -22,11 +22,10 @@ import javax.swing.JOptionPane;
  */
 public class Deposit extends javax.swing.JInternalFrame {
 
-    
     Connection con;
     PreparedStatement insert;
     ResultSet rs;
-    
+
     /**
      * Creates new form Deposit
      */
@@ -59,7 +58,7 @@ public class Deposit extends javax.swing.JInternalFrame {
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtamount = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
 
@@ -127,15 +126,20 @@ public class Deposit extends javax.swing.JInternalFrame {
 
         jLabel12.setText("Deposit Amount  (Rs.):");
 
-        jTextField1.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(255, 0, 51));
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtamount.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
+        txtamount.setForeground(new java.awt.Color(255, 0, 51));
+        txtamount.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtamountActionPerformed(evt);
             }
         });
 
         jButton1.setText("OK");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setText("Cancel");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
@@ -169,7 +173,7 @@ public class Deposit extends javax.swing.JInternalFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 123, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jTextField1)
+                        .addComponent(txtamount)
                         .addComponent(jLabel10)
                         .addComponent(jLabel11)
                         .addComponent(jLabel12, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -192,7 +196,7 @@ public class Deposit extends javax.swing.JInternalFrame {
                         .addComponent(jLabel12))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(29, 29, 29)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtamount, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(3, 3, 3)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
@@ -222,19 +226,18 @@ public class Deposit extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    public void date(){
-        
+    public void date() {
+
         DateTimeFormatter dtd = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         LocalDateTime now = LocalDateTime.now();
         String date = dtd.format(now);
-        
-        
+
         jLabel9.setText(date);
     }
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtamountActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtamountActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtamountActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
@@ -248,30 +251,30 @@ public class Deposit extends javax.swing.JInternalFrame {
 
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
-            
+
             insert = con.prepareStatement("select c.cust_id, c.fname, c.lname, a.balance from customer c, account a where c.cust_id = a.cust_id and a.acc_id = ?");
             insert.setString(1, accNo);
-            
+
             rs = insert.executeQuery();
-            
-            if(rs.next() == false){
-                
+
+            if (rs.next() == false) {
+
                 JOptionPane.showMessageDialog(this, "Account number not found!");
-                
-            }else{
-                
+
+            } else {
+
                 String id = rs.getString(1);
                 String firstname = rs.getString(2);
                 String lastname = rs.getString(3);
                 String balance = rs.getString(4);
-                
+
                 jLabel6.setText(id.trim());
                 jLabel7.setText(firstname.trim());
                 jLabel8.setText(lastname.trim());
                 jLabel11.setText(balance.trim());
-                
+
             }
-            
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Deposit.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
@@ -279,6 +282,39 @@ public class Deposit extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try {
+            // TODO add your handling code here:
+            
+            String acno = txtAccNo.getText();
+            String cuID = jLabel6.getText();
+            String firstname = jLabel7.getText();
+            String lname = jLabel8.getText();
+            String date = jLabel9.getText();
+            String balance = jLabel11.getText();
+            String amount = txtamount.getText();
+            
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
+            
+            insert = con.prepareStatement("insert into deposit(acc_id, cust_id, date, balance, deposit)values(?,?,?,?,?)");
+            insert.setString(1, acno);
+            insert.setString(2, cuID);
+            insert.setString(3, date);
+            insert.setString(4, balance);
+            insert.setString(5, amount);
+            
+            insert.executeUpdate();
+            JOptionPane.showMessageDialog(this, "Successfully deposited...");
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Deposit.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Deposit.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }//GEN-LAST:event_jButton1ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -298,7 +334,7 @@ public class Deposit extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField txtAccNo;
+    private javax.swing.JTextField txtamount;
     // End of variables declaration//GEN-END:variables
 }
