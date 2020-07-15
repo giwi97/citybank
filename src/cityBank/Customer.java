@@ -5,6 +5,15 @@
  */
 package cityBank;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Acer
@@ -35,7 +44,7 @@ public class Customer extends javax.swing.JInternalFrame {
         txtLname = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        lblcustNo = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Customer"));
@@ -56,9 +65,9 @@ public class Customer extends javax.swing.JInternalFrame {
 
         jButton2.setText("Cancel");
 
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jLabel5.setForeground(new java.awt.Color(0, 153, 153));
-        jLabel5.setText("jLabel5");
+        lblcustNo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblcustNo.setForeground(new java.awt.Color(0, 153, 153));
+        lblcustNo.setText("jLabel5");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -85,7 +94,7 @@ public class Customer extends javax.swing.JInternalFrame {
                             .addGroup(jPanel1Layout.createSequentialGroup()
                                 .addComponent(jLabel2)
                                 .addGap(18, 18, 18)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)))))
+                                .addComponent(lblcustNo, javax.swing.GroupLayout.DEFAULT_SIZE, 346, Short.MAX_VALUE)))))
                 .addGap(141, 141, 141))
         );
         jPanel1Layout.setVerticalGroup(
@@ -94,7 +103,7 @@ public class Customer extends javax.swing.JInternalFrame {
                 .addGap(97, 97, 97)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jLabel5))
+                    .addComponent(lblcustNo))
                 .addGap(50, 50, 50)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -139,6 +148,41 @@ public class Customer extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    Connection con;
+    PreparedStatement insert;
+    
+    public void autoId() {
+
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
+            Statement s = con.createStatement();
+            
+            ResultSet rs = s.executeQuery("select Max(cust_id) from customer");
+            rs.getString("Max(cust_id)");
+            
+            if(rs.getString("Max(cust_id)") == null){
+                
+                lblcustNo.setText("CUS001");
+                
+            }else{
+                
+                long id = Long.parseLong(rs.getString("Max(cust_id)").substring(2,rs.getString("Max(cust_id)").length()));
+                id++;
+                
+                lblcustNo.setText("CUS" +String.format("%03d", id));
+                
+                
+            }
+            
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
     private void txtFnameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtFnameActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtFnameActionPerformed
@@ -151,8 +195,8 @@ public class Customer extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JPanel jPanel1;
+    private javax.swing.JLabel lblcustNo;
     private javax.swing.JTextField txtFname;
     private javax.swing.JTextField txtLname;
     // End of variables declaration//GEN-END:variables
