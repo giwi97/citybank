@@ -71,6 +71,11 @@ public class Customer extends javax.swing.JInternalFrame {
         });
 
         jButton2.setText("Cancel");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         lblcustNo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
         lblcustNo.setForeground(new java.awt.Color(0, 153, 153));
@@ -171,14 +176,14 @@ public class Customer extends javax.swing.JInternalFrame {
 
             if (rs.getString("Max(cust_id)") == null) {
 
-                lblcustNo.setText("CUS001");
+                lblcustNo.setText("CS001");
 
             } else {
 
                 long id = Long.parseLong(rs.getString("Max(cust_id)").substring(2, rs.getString("Max(cust_id)").length()));
                 id++;
 
-                lblcustNo.setText("CUS" + String.format("%03d", id));
+                lblcustNo.setText("CS" + String.format("%03d", id));
 
             }
 
@@ -215,6 +220,12 @@ public class Customer extends javax.swing.JInternalFrame {
             
             JOptionPane.showMessageDialog(this, "Customer added successfully...");
             
+            txtFname.setText("");
+            txtLname.setText("");
+            autoId();
+            txtFname.requestFocus();
+            
+            
         } catch (SQLException ex) {
             Logger.getLogger(Customer.class.getName()).log(Level.SEVERE, null, ex);
         } catch (ClassNotFoundException ex) {
@@ -222,6 +233,13 @@ public class Customer extends javax.swing.JInternalFrame {
         }
 
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        
+        setVisible(false);
+        dispose();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
