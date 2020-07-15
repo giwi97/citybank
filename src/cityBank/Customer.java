@@ -160,6 +160,7 @@ public class Customer extends javax.swing.JInternalFrame {
             Statement s = con.createStatement();
             
             ResultSet rs = s.executeQuery("select Max(cust_id) from customer");
+            rs.next();
             rs.getString("Max(cust_id)");
             
             if(rs.getString("Max(cust_id)") == null){
