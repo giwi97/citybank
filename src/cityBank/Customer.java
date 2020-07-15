@@ -25,6 +25,7 @@ public class Customer extends javax.swing.JInternalFrame {
      */
     public Customer() {
         initComponents();
+        autoId();
     }
 
     /**
