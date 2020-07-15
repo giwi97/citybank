@@ -46,7 +46,7 @@ public class Account extends javax.swing.JInternalFrame {
         txtcusName = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        lblcustNo = new javax.swing.JLabel();
+        lblAccNo = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
         txtBal = new javax.swing.JTextField();
@@ -82,9 +82,9 @@ public class Account extends javax.swing.JInternalFrame {
             }
         });
 
-        lblcustNo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        lblcustNo.setForeground(new java.awt.Color(0, 153, 153));
-        lblcustNo.setText("jLabel5");
+        lblAccNo.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblAccNo.setForeground(new java.awt.Color(0, 153, 153));
+        lblAccNo.setText("jLabel5");
 
         jLabel5.setText("Account type :");
 
@@ -124,7 +124,7 @@ public class Account extends javax.swing.JInternalFrame {
                                 .addComponent(txtCusID, javax.swing.GroupLayout.PREFERRED_SIZE, 133, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 94, Short.MAX_VALUE)
                                 .addComponent(jButton3))
-                            .addComponent(lblcustNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblAccNo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(txtcusName, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtBal, javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(comAcct, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
@@ -141,7 +141,7 @@ public class Account extends javax.swing.JInternalFrame {
                 .addGap(32, 32, 32)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(lblcustNo))
+                    .addComponent(lblAccNo))
                 .addGap(43, 43, 43)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -207,14 +207,14 @@ public class Account extends javax.swing.JInternalFrame {
 
             if (rs.getString("Max(acc_id)") == null) {
 
-                lblcustNo.setText("A0001");
+                lblAccNo.setText("A0001");
 
             } else {
 
                 long id = Long.parseLong(rs.getString("Max(acc_id)").substring(2, rs.getString("Max(acc_id)").length()));
                 id++;
 
-                lblcustNo.setText("A" + String.format("%03d", id));
+                lblAccNo.setText("A" + String.format("%03d", id));
 
             }
 
@@ -234,25 +234,30 @@ public class Account extends javax.swing.JInternalFrame {
         try {
             // TODO add your handling code here:
 
-            String customerID = lblcustNo.getText();
-            String fName = txtCusID.getText();
-            String lName = txtcusName.getText();
+            String accNo = lblAccNo.getText();
+            String cusID = txtCusID.getText();
+            String cusName = txtcusName.getText();
+            String accType = comAcct.getSelectedItem().toString();
+            String bal = txtBal.getText();
 
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
 
-            insert = con.prepareStatement("insert into customer(cust_id, fname, lname) values(?,?,?)");
+            insert = con.prepareStatement("insert into account(acc_id, cust_id, acc_type, balance) values(?,?,?,?)");
 
-            insert.setString(1, customerID);
-            insert.setString(2, fName);
-            insert.setString(3, lName);
+            insert.setString(1, accNo);
+            insert.setString(2, cusID);
+            insert.setString(3, accType);
+            insert.setString(4, bal);
 
             insert.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Customer added successfully...");
+            JOptionPane.showMessageDialog(this, "Account created successfully...");
 
             txtCusID.setText("");
             txtcusName.setText("");
+            comAcct.setSelectedIndex(-1);
+            txtBal.setText("");
             autoId();
             txtCusID.requestFocus();
 
@@ -318,7 +323,7 @@ public class Account extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JLabel lblcustNo;
+    private javax.swing.JLabel lblAccNo;
     private javax.swing.JTextField txtBal;
     private javax.swing.JTextField txtCusID;
     private javax.swing.JTextField txtcusName;
