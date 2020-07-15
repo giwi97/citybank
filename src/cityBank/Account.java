@@ -90,7 +90,7 @@ public class Account extends javax.swing.JInternalFrame {
 
         jLabel6.setText("Balance :");
 
-        comAcct.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        comAcct.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Saving", "Fixed", "Current" }));
 
         jButton3.setText("Search");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
@@ -201,20 +201,20 @@ public class Account extends javax.swing.JInternalFrame {
             con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
             Statement s = con.createStatement();
 
-            ResultSet rs = s.executeQuery("select Max(cust_id) from customer");
+            ResultSet rs = s.executeQuery("select Max(acc_id) from account");
             rs.next();
-            rs.getString("Max(cust_id)");
+            rs.getString("Max(acc_id)");
 
-            if (rs.getString("Max(cust_id)") == null) {
+            if (rs.getString("Max(acc_id)") == null) {
 
-                lblcustNo.setText("CS001");
+                lblcustNo.setText("A0001");
 
             } else {
 
-                long id = Long.parseLong(rs.getString("Max(cust_id)").substring(2, rs.getString("Max(cust_id)").length()));
+                long id = Long.parseLong(rs.getString("Max(acc_id)").substring(2, rs.getString("Max(acc_id)").length()));
                 id++;
 
-                lblcustNo.setText("CS" + String.format("%03d", id));
+                lblcustNo.setText("A" + String.format("%03d", id));
 
             }
 
