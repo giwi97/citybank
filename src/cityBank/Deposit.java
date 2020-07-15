@@ -23,7 +23,7 @@ import javax.swing.JOptionPane;
 public class Deposit extends javax.swing.JInternalFrame {
 
     Connection con;
-    PreparedStatement insert;
+    PreparedStatement insert, update;
     ResultSet rs;
 
     /**
@@ -286,7 +286,7 @@ public class Deposit extends javax.swing.JInternalFrame {
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try {
             // TODO add your handling code here:
-            
+
             String acno = txtAccNo.getText();
             String cuID = jLabel6.getText();
             String firstname = jLabel7.getText();
@@ -294,20 +294,27 @@ public class Deposit extends javax.swing.JInternalFrame {
             String date = jLabel9.getText();
             String balance = jLabel11.getText();
             String amount = txtamount.getText();
-            
+
             Class.forName("com.mysql.jdbc.Driver");
             con = DriverManager.getConnection("jdbc:mysql://localhost/citybank", "root", "");
-            
+
             insert = con.prepareStatement("insert into deposit(acc_id, cust_id, date, balance, deposit)values(?,?,?,?,?)");
             insert.setString(1, acno);
             insert.setString(2, cuID);
             insert.setString(3, date);
             insert.setString(4, balance);
             insert.setString(5, amount);
-            
+
             insert.executeUpdate();
-            JOptionPane.showMessageDialog(this, "Successfully deposited...");
+
+            update = con.prepareStatement("update account set balance = balance + ? where acc_id = ?");
+            update.setString(1, amount);
+            update.setString(2, acno);
             
+            update.executeUpdate();
+
+            JOptionPane.showMessageDialog(this, "Successfully deposited...");
+
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(Deposit.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SQLException ex) {
